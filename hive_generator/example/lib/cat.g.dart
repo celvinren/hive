@@ -16,6 +16,7 @@ class AnimalAdapter extends TypeAdapter<Animal> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+
     return Animal(
       field1: fields[1] as int,
       field0: fields[0] as String,
@@ -53,6 +54,7 @@ class CatAdapter extends TypeAdapter<Cat> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+
     return Cat(
       field2: fields[2] as String,
       field0: fields[0] as String,
@@ -93,6 +95,7 @@ class TigerAdapter extends TypeAdapter<Tiger> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+
     return Tiger(
       fields[3] as int,
       field2: fields[2] as String,
