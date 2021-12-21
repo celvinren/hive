@@ -47,7 +47,7 @@ class TypeAdapterGenerator extends GeneratorForAnnotation<HiveType> {
     Builder builder;
     if (cls.isEnum) {
       builder = EnumBuilder(cls, getters);
-    } else if (enumClassChecker.isExactlyType(cls.supertype)) {
+    } else if (enumClassChecker.isExactlyType(cls.supertype!)) {
       builder = EnumClassBuilder(cls);
     } else {
       builder = ClassBuilder(cls, getters, setters);

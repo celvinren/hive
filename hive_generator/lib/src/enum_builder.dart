@@ -10,7 +10,7 @@ class EnumBuilder extends Builder {
     var code = StringBuffer();
     code.writeln('switch (reader.readByte()) {');
 
-    for (var field in getters) {
+    for (var field in getters!) {
       code.writeln('''
         case ${field.index}:
           return ${cls.name}.${field.name};''');
@@ -29,7 +29,7 @@ class EnumBuilder extends Builder {
     var code = StringBuffer();
     code.writeln('switch (obj) {');
 
-    for (var field in getters) {
+    for (var field in getters!) {
       code.writeln('''
         case ${cls.name}.${field.name}:
           writer.writeByte(${field.index});

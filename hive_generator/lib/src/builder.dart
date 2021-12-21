@@ -10,7 +10,7 @@ class AdapterField {
   DartType get type => element.variable.type;
 
   bool get isNullable {
-    switch (element.variable.type?.nullabilitySuffix) {
+    switch (element.variable.type.nullabilitySuffix) {
       case NullabilitySuffix.none:
         return false;
       default:
@@ -27,7 +27,7 @@ class AdapterField {
 }
 
 class BuiltAdapterField extends AdapterField {
-  DartType _type;
+  DartType? _type;
 
   @override
   DartType get type => _type ?? super.type;
@@ -45,7 +45,7 @@ class BuiltAdapterField extends AdapterField {
       metadata.computeConstantValue()?.toStringValue() == 'nullable');
 
   bool get hasNullableType =>
-      element?.returnType?.nullabilitySuffix == NullabilitySuffix.question;
+      element.returnType.nullabilitySuffix == NullabilitySuffix.question;
 
   @override
   bool get isNullable => hasNullableAnnotation || hasNullableType;
@@ -57,8 +57,8 @@ class BuiltAdapterField extends AdapterField {
 
 abstract class Builder {
   final ClassElement cls;
-  final List<AdapterField> getters;
-  final List<AdapterField> setters;
+  final List<AdapterField>? getters;
+  final List<AdapterField>? setters;
 
   Builder(this.cls, this.getters, this.setters) : assert(cls != null);
 

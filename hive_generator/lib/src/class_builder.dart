@@ -43,7 +43,7 @@ class ClassBuilder extends _ClassBuilderBase {
   bool _nestedBuildersFromAnnotation() {
     final annotation =
         cls.metadata.map((e) => e.computeConstantValue()).singleWhere(
-              (e) => builtValueChecker.isExactlyType(e.type),
+              (e) => builtValueChecker.isExactlyType(e!.type!),
               orElse: () => null,
             );
     if (annotation == null) {
@@ -68,7 +68,7 @@ class ClassBuilder extends _ClassBuilderBase {
 
     // In case the builder is being generated, we assume it has the default
     // name and fields
-    if (builderType?.isDynamic ?? true) {
+    if (builderType.isDynamic) {
       builderName = '${cls.name}Builder';
 
       // We want to set an builder instead of the built class depending on the
@@ -78,7 +78,7 @@ class ClassBuilder extends _ClassBuilderBase {
 
       // The fields that need to be set on the cascade are the getters in the
       // built class, because they have an corresponding setter in the builder.
-      fields = getters.map((field) => field.toBuilt(nestedBuilders)).toList();
+      fields = getters!.map((field) => field.toBuilt(nestedBuilders)).toList();
     } else {
       // The builder type was manually created, therefore we look it up for
       // @HiveField annotations
@@ -100,7 +100,7 @@ class ClassBuilder extends _ClassBuilderBase {
       // The edge case is when the type is an Builder which is being generated.
       // In this case we set nestedBuilders = true and the type to the Built
       // type as a workaround.
-      final clsFieldMap = {for (final field in getters) field.index: field};
+      final clsFieldMap = {for (final field in getters!) field.index: field};
       for (final builderField in fields) {
         final builtField = clsFieldMap[builderField.index];
         if (builtField == null) {
@@ -140,9 +140,9 @@ class ClassBuilder extends _ClassBuilderBase {
   String _castBuiltCollection(
     DartType type,
     String variable, {
-    bool nestedBuilders,
+    bool? nestedBuilders,
   }) {
-    String builderConstructor;
+    String? builderConstructor;
     String typeToBeCasted;
     var castExpr = '';
     // Wether or not we should call build() on the end.
@@ -338,12 +338,12 @@ class _ClassBuilderBase extends Builder {
     check(constr != null, 'Provide an unnamed constructor.');
 
     // The remaining fields to be set later
-    var fields = setters.toList();
+    var fields = setters!.toList();
 
     for (var param in constr?.parameters ?? <ParameterElement>[]) {
       var field = fields.firstOrNullWhere((it) => it.name == param.name);
       // Final fields
-      field ??= getters.firstOrNullWhere((it) => it.name == param.name);
+      field ??= getters!.firstOrNullWhere((it) => it.name == param.name);
       if (field != null) {
         if (param.isNamed) {
           code.write('${param.name}: ');
@@ -438,8 +438,8 @@ class _ClassBuilderBase extends Builder {
   String buildWrite() {
     var code = StringBuffer();
     code.writeln('writer');
-    code.writeln('..writeByte(${getters.length})');
-    for (var field in getters) {
+    code.writeln('..writeByte(${getters!.length})');
+    for (var field in getters!) {
       var value = convertWritableValue(field.type, 'obj.${field.name}');
       code.writeln('''
       ..writeByte(${field.index})
@@ -459,12 +459,12 @@ class _ClassBuilderBase extends Builder {
   }
 }
 
-String _displayString(dynamic e) {
+String? _displayString(dynamic e) {
   try {
-    return e.getDisplayString(withNullability: false) as String;
+    return e.getDisplayString(withNullability: false) as String?;
   } catch (error) {
     if (error is TypeError) {
-      return e.getDisplayString() as String;
+      return e.getDisplayString() as String?;
     } else {
       rethrow;
     }
